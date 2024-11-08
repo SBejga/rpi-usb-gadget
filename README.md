@@ -9,20 +9,11 @@ Other operating systems are derived from the basic template used in Raspberry Pi
 
 ## Available Images
 
-* Raspberry Pi OS (`arm64` and `armhf`)
-  * Lite
-  * Desktop 
-* Ubuntu (`arm64` and `armhf`)
-  * Server
+* Raspberry Pi OS Lite arm64
 
 ## Burning Your Image
 
-Since v0.2, images no longer have a default user/password. The recommened approach is to set the user/password during image burn with [Raspberry Pi Imager][rpimg].
-
-I have a video showing how to burn and customize an image here:
-
-[![Raspberry Pi iPad Pro Setup Guide](https://img.youtube.com/vi/dUeQUCF6KPc/hqdefault.jpg
-)](https://youtu.be/dUeQUCF6KPc "Raspberry Pi iPad Pro Setup Guide")
+with [Raspberry Pi Imager][rpimg].
 
 ## Building Images with Docker
 
