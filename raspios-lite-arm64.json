@@ -64,16 +64,12 @@
 		{
 			"type": "shell",
 			"inline": [
-				"echo dtoverlay=dwc2,dr_mode=peripheral \u003e\u003e /boot/firmware/config.txt",
-				"sed -i 's/$/ modules-load=dwc2,g_ether/' /boot/firmware/cmdline.txt",
-				"sed -i '$ s/$/ cgroup_enable=cpuset cgroup_enable=memory cgroup_memory=1 swapaccount=1/' /boot/firmware/cmdline.txt",
+				"echo dtoverlay=dwc2,dr_mode=peripheral \u003e\u003e /boot/config.txt",
+				"sed -i 's/$/ modules-load=dwc2,g_ether/' /boot/cmdline.txt",
+				"sed -i '$ s/$/ cgroup_enable=cpuset cgroup_enable=memory cgroup_memory=1 swapaccount=1/' /boot/cmdline.txt",
 				"touch /boot/ssh",
 				"echo denyinterfaces usb0 \u003e\u003e /etc/dhcpcd.conf"
 			]
-		},
-		{
-			"type": "shell",
-			"inline": "sudo docker info"
 		},
 		{
 			"type": "shell",
