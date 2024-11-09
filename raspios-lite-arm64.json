@@ -14,7 +14,7 @@
 				"$ARCHIVE_PATH"
 			],
 			"image_build_method": "reuse",
-			"image_path": "raspios-lite-bookworm-arm64-2024-10-22.img",
+			"image_path": "raspios-lite-bookworm-arm64-2024-10-22-k3s.img",
 			"image_size": "2G",
 			"image_type": "dos",
 			"image_partitions": [
@@ -47,7 +47,8 @@
 			"type": "shell",
 			"inline": [
 				"sudo apt update",
-				"sudo apt install -y dnsmasq"
+				"sudo apt install -y dnsmasq",
+				"sudo apt install -y docker.io"
 			]
 		},
 		{
@@ -63,11 +64,20 @@
 		{
 			"type": "shell",
 			"inline": [
-				"echo dtoverlay=dwc2,dr_mode=peripheral \u003e\u003e /boot/config.txt",
-				"sed -i 's/$/ modules-load=dwc2,g_ether/' /boot/cmdline.txt",
+				"echo dtoverlay=dwc2,dr_mode=peripheral \u003e\u003e /boot/firmware/config.txt",
+				"sed -i 's/$/ modules-load=dwc2,g_ether/' /boot/firmware/cmdline.txt",
+				"sed -i '$ s/$/ cgroup_enable=cpuset cgroup_enable=memory cgroup_memory=1 swapaccount=1/' /boot/firmware/cmdline.txt",
 				"touch /boot/ssh",
 				"echo denyinterfaces usb0 \u003e\u003e /etc/dhcpcd.conf"
 			]
+		},
+		{
+			"type": "shell",
+			"inline": "sudo docker info"
+		},
+		{
+			"type": "shell",
+			"inline": "curl -sfL https://get.k3s.io | sh -"
 		},
 		{
 			"type": "shell",
