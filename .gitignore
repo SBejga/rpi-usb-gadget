@@ -2,3 +2,4 @@
 packer-builder-arm
 .DS_Store
 *.log
+.packer_cache
