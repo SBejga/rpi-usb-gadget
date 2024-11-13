@@ -1,6 +1,27 @@
 # todo
 
+## latest rpi kernel
+
+```
+sudo apt update && sudo apt -y full-upgrade && sudo apt auto-remove
+```
+
+## Check:
+- master node / hostname
+- docker ps ?
+- node labels?
+
+advertise ip of master?
+
+## TODO:
+
+push rpi-dot3k image to registry or to
+
+unattended k3s agent init?
+- https://gitlab.com/JimDanner/pi-boot-script/
+
 pre download images?
+- https://docs.k3s.io/installation/airgap
 - docker save?
 - docker save myimage:latest | gzip > myimage_latest.tar.gz
 - zstd?

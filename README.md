@@ -38,9 +38,12 @@ sudo packer build raspios-lite-usb-gadget-arm.json
 
 You can substitute any other build specification in the call to `packer build`.
 
-
 [packer]: https://www.packer.io/
 [pba]: https://github.com/mkaczanowski/packer-builder-arm
 [bh]: https://www.hardill.me.uk/wordpress/2020/02/21/building-custom-raspberry-pi-sd-card-images/
 [go]: https://golang.org
 [rpimg]: https://www.raspberrypi.com/software/
+
+## Additional
+
+- socat | to allow kubectl port-forward
