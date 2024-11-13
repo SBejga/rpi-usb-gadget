@@ -14,8 +14,8 @@
 				"$ARCHIVE_PATH"
 			],
 			"image_build_method": "reuse",
-			"image_path": "raspios-lite-bookworm-arm64-2024-10-22-docker.img",
-			"image_size": "2G",
+			"image_path": "raspios-lite-bookworm-arm64-k3s.img",
+			"image_size": "4G",
 			"image_type": "dos",
 			"image_partitions": [
 				{
@@ -47,7 +47,9 @@
 			"type": "shell",
 			"inline": [
 				"sudo apt update",
-				"sudo apt install -y git vim dnsmasq docker.io"
+				"sudo apt install -y dnsmasq docker.io socat",
+				"sudo apt-get remove -y needrestart",
+				"sudo apt auto-remove -y"
 			]
 		},
 		{
@@ -74,27 +76,26 @@
 		},
 		{
 			"type": "shell",
-			"inline": "echo alias k=kubectl \u003e\u003e /etc/skel/.bash_aliases"
+			"inline": [
+				"echo alias k=kubectl \u003e\u003e /home/pi/.bash_aliases"
+			]
 		},
 		{
 			"type": "file",
-			"source": "k3s-arm64-v1.31.2+k3s1",
-			"destination": "/usr/local/bin/k3s"
-		},
-		{
-			"type": "file",
-			"source": "sources//etc/rancher/k3s/config.yaml",
-			"destination": "/etc/rancher/k3s/config.yaml"
-		},
-		{
-			"type": "file",
-			"source": "install-k3s.sh",
-			"destination": "/etc/skel/install-k3s.sh"
+			"source": "install-k3s-server.sh",
+			"destination": "/home/pi/install-k3s-server.sh"
 		},
 		{
 			"type": "file",
 			"source": "get.k3s.sh",
-			"destination": "/etc/skel/get.k3s.sh"
+			"destination": "/home/pi/get.k3s.sh"
+		},
+		{
+			"type": "shell",
+			"inline": [
+				"chmod +x /home/pi/install-k3s-server.sh",
+				"chmod +x /home/pi/get.k3s.sh"
+			]
 		},
 		{
 			"type": "shell",
