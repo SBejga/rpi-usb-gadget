@@ -3,7 +3,37 @@
 SD Write & Verify
 SanDisk High Endurance: 4:59
 
+## Install
+
+sudo kubeadm init --pod-network-cidr=192.168.0.0/16 --token-ttl 0 --cri-socket=unix:///var/run/cri-dockerd.sock
+
+> without kube-proxy, problems with cilium and cidr at home
+> --skip-phases=addon/kube-proxy 
+
+sudo kubeadm join 10.0.10.60:6443 --cri-socket=unix:///var/run/cri-dockerd.sock \
+	--token ae274s.2b26a0xm8evh20h3 \
+	--discovery-token-ca-cert-hash sha256:9361f89937b38a49ae7e70c09a05bb9b106c6aa6b866ca933356ff0ba72f8690
+
+### cilium
+
+sudo KUBECONFIG=/etc/kubernetes/admin.conf cilium install --version 1.16.3
+sudo KUBECONFIG=/etc/kubernetes/admin.conf cilium status
+
+> detected that the sandbox image "registry.k8s.io/pause:3.9" of the container runtime is inconsistent with that used by kubeadm.It is recommended to use "registry.k8s.io/pause:3.10" as the CRI sandbox image.
+
+sudo helm repo add cilium https://helm.cilium.io/
+sudo KUBECONFIG=/etc/kubernetes/admin.conf helm install cilium cilium/cilium --version 1.16.3 --namespace kube-system -f cilium.yaml
+
+## test
+
+kubectl run nginx --image=nginx --port=80
+kubectl expose pod nginx --port=8080 --target-port=80
+
 ## walpi0
+
+> works, but PODs get an IP in 10.0.0.* and 10.0.1.* i guess by node. Conflicts with our 10.0.10 :-O
+
+> and cilium-envoy fails ony RPi 4. On 5 it is okay.
 
 ```
 [init] Using Kubernetes version: v1.31.2
@@ -80,6 +110,6 @@ Run "kubectl apply -f [podnetwork].yaml" with one of the options listed at:
 
 Then you can join any number of worker nodes by running the following on each as root:
 
-kubeadm join 10.0.10.174:6443 --token REDACTED \
+kubeadm join 10.0.10.174:6443 --token nzpbuw.d7lxydj6gccgolg5 \
 	--discovery-token-ca-cert-hash sha256:0a56b74bb04829546ce345ea055a585415ee7bb58088365dec6224d615ee6f54
 ```
