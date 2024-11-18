@@ -44,10 +44,22 @@
 	],
 	"provisioners": [
 		{
+			"type": "shell",
+			"inline": "echo '// Docker, socat, dnsmasq'"
+		},
+		{
 			"inline": [
 				"sudo apt update",
-				"sudo apt install -y docker.io socat dnsmasq ",
+				"sudo apt install -y docker.io socat dnsmasq cockpit",
 				"sudo apt auto-remove -y"
+			],
+			"type": "shell"
+		},
+		{
+			"inline": [
+				"curl -L --fail --remote-name-all https://github.com/RamonGiovane/guiptables/archive/refs/tags/1.4.0.tar.gz",
+				"sudo tar xzvfC 1.4.0.tar.gz /usr/share/cockpit/",
+				"rm 1.4.0.tar.gz"
 			],
 			"type": "shell"
 		},
@@ -75,25 +87,32 @@
 		},
 		{
 			"type": "shell",
+			"inline": "echo '// Alias k=kubectl & Kubeconfig'"
+		},
+		{
+			"type": "shell",
 			"inline": [
 				"echo alias k=kubectl \u003e\u003e /home/pi/.bash_aliases",
-				"sudo echo alias k=kubectl \u003e\u003e /root/.bash_aliases"
+				"echo export KUBECONFIG=/etc/kubernetes/admin.conf \u003e\u003e /home/pi/.bashrc",
+				"sudo echo alias k=kubectl \u003e\u003e /root/.bashrc",
+				"sudo echo export KUBECONFIG=/etc/kubernetes/admin.conf \u003e\u003e /root/.bashrc"
 			]
 		},
 		{
 			"type": "shell",
-			"inline": "echo '// K8s'"
+			"inline": "echo '// K8s binaries'"
 		},
 		{
 			"inline": [
 				"sudo apt-get install -y apt-transport-https ca-certificates curl gpg",
-				"curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.31/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg",
-				"sudo echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.31/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list",
+				"curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg",
+				"sudo echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list",
 				"sudo apt-get update",
 				"sudo apt-get install -y kubelet kubeadm kubectl",
 				"sudo apt-mark hold kubelet kubeadm kubectl",
 				"sudo service dphys-swapfile stop",
-				"sudo systemctl disable dphys-swapfile"
+				"sudo systemctl disable dphys-swapfile",
+				"sudo kubeadm config images pull --kubernetes-version 1.30.6 --cri-socket=unix:///var/run/cri-dockerd.sock"
 			],
 			"type": "shell"
 		},
@@ -149,6 +168,11 @@
 				"rm cilium-linux-${CILIUM_CLI_ARCH}.tar.gz.sha256sum"
 			],
 			"type": "shell"
+		},
+		{
+			"type": "file",
+			"source": "cilium-values.yaml",
+			"destination": "/home/pi/cilium-values.yaml"
 		},
 		{
 			"type": "shell",

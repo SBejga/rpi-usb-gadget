@@ -1,10 +1,5 @@
 # todo
 
-## latest rpi kernel
-
-```
-sudo apt update && sudo apt -y full-upgrade && sudo apt auto-remove
-```
 
 ## Check:
 - master node / hostname
