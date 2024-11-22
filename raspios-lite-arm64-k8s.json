@@ -50,10 +50,15 @@
 		{
 			"inline": [
 				"sudo apt update",
-				"sudo apt install -y docker.io socat dnsmasq cockpit",
+				"sudo apt install -y docker.io socat dnsmasq cockpit vim",
 				"sudo apt auto-remove -y"
 			],
 			"type": "shell"
+		},
+		{
+			"type": "file",
+			"source": "sources//etc/systemd/system/cockpit.socket.d/override.conf",
+			"destination": "/etc/systemd/system/cockpit.socket.d/override.conf"
 		},
 		{
 			"inline": [
@@ -80,6 +85,7 @@
 				"sed -i 's/#dtparam=spi/dtparam=spi/' /boot/config.txt",
 				"sed -i 's/$/ modules-load=dwc2,g_ether/' /boot/cmdline.txt",
 				"sed -i '$ s/$/ cgroup_enable=cpuset cgroup_enable=memory cgroup_memory=1 swapaccount=1/' /boot/cmdline.txt",
+				"sed -i 's/#net.ipv4.ip_forward = 1/net.ipv4.ip_forward = 1/' /etc/sysctl.conf",
 				"touch /boot/ssh",
 				"echo denyinterfaces usb0 \u003e\u003e /etc/dhcpcd.conf"
 			],
@@ -97,6 +103,28 @@
 				"sudo echo alias k=kubectl \u003e\u003e /root/.bashrc",
 				"sudo echo export KUBECONFIG=/etc/kubernetes/admin.conf \u003e\u003e /root/.bashrc"
 			]
+		},
+		{
+			"type": "shell",
+			"inline": "echo '// CRI dockerd'"
+		},
+		{
+			"inline": [
+				"wget https://github.com/Mirantis/cri-dockerd/releases/download/v0.3.15/cri-dockerd-0.3.15.arm64.tgz",
+				"tar -xvzf cri-dockerd-0.3.15.arm64.tgz",
+				"sudo mv cri-dockerd/cri-dockerd /usr/bin/cri-dockerd",
+				"sudo chmod +x /usr/bin/cri-dockerd",
+				"wget https://raw.githubusercontent.com/Mirantis/cri-dockerd/master/packaging/systemd/cri-docker.service",
+				"wget https://raw.githubusercontent.com/Mirantis/cri-dockerd/master/packaging/systemd/cri-docker.socket",
+				"sudo mv cri-docker.service /etc/systemd/system/",
+				"sudo mv cri-docker.socket /etc/systemd/system/",
+				"sudo systemctl enable cri-docker.service",
+				"sudo systemctl enable cri-docker.socket",
+				"sudo systemctl start cri-docker.service",
+				"sudo systemctl start cri-docker.socket",
+				"rm cri-dockerd-0.3.15.arm64.tgz"
+			],
+			"type": "shell"
 		},
 		{
 			"type": "shell",
@@ -127,28 +155,6 @@
 				"echo 'deb [arch=arm64 signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main' | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list",
 				"sudo apt-get update",
 				"sudo apt-get install helm"
-			],
-			"type": "shell"
-		},
-		{
-			"type": "shell",
-			"inline": "echo '// CRI dockerd'"
-		},
-		{
-			"inline": [
-				"wget https://github.com/Mirantis/cri-dockerd/releases/download/v0.3.15/cri-dockerd-0.3.15.arm64.tgz",
-				"tar -xvzf cri-dockerd-0.3.15.arm64.tgz",
-				"sudo mv cri-dockerd/cri-dockerd /usr/bin/cri-dockerd",
-				"sudo chmod +x /usr/bin/cri-dockerd",
-				"wget https://raw.githubusercontent.com/Mirantis/cri-dockerd/master/packaging/systemd/cri-docker.service",
-				"wget https://raw.githubusercontent.com/Mirantis/cri-dockerd/master/packaging/systemd/cri-docker.socket",
-				"sudo mv cri-docker.service /etc/systemd/system/",
-				"sudo mv cri-docker.socket /etc/systemd/system/",
-				"sudo systemctl enable cri-docker.service",
-				"sudo systemctl enable cri-docker.socket",
-				"sudo systemctl start cri-docker.service",
-				"sudo systemctl start cri-docker.socket",
-				"rm cri-dockerd-0.3.15.arm64.tgz"
 			],
 			"type": "shell"
 		},
