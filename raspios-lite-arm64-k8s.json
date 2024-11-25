@@ -56,17 +56,18 @@
 			"type": "shell"
 		},
 		{
-			"type": "file",
-			"source": "sources//etc/systemd/system/cockpit.socket.d/override.conf",
-			"destination": "/etc/systemd/system/cockpit.socket.d/override.conf"
-		},
-		{
 			"inline": [
 				"curl -L --fail --remote-name-all https://github.com/RamonGiovane/guiptables/archive/refs/tags/1.4.0.tar.gz",
 				"sudo tar xzvfC 1.4.0.tar.gz /usr/share/cockpit/",
-				"rm 1.4.0.tar.gz"
+				"rm 1.4.0.tar.gz",
+				"sudo mkdir /etc/systemd/system/cockpit.socket.d/"
 			],
 			"type": "shell"
+		},
+		{
+			"type": "file",
+			"source": "sources//etc/systemd/system/cockpit.socket.d/override.conf",
+			"destination": "/etc/systemd/system/cockpit.socket.d/override.conf"
 		},
 		{
 			"type": "file",
@@ -139,8 +140,7 @@
 				"sudo apt-get install -y kubelet kubeadm kubectl",
 				"sudo apt-mark hold kubelet kubeadm kubectl",
 				"sudo service dphys-swapfile stop",
-				"sudo systemctl disable dphys-swapfile",
-				"sudo kubeadm config images pull --kubernetes-version 1.30.6 --cri-socket=unix:///var/run/cri-dockerd.sock"
+				"sudo systemctl disable dphys-swapfile"
 			],
 			"type": "shell"
 		},
