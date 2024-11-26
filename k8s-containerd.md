@@ -80,6 +80,13 @@ cilium install
 kubectl taint nodes --all node-role.kubernetes.io/control-plane-
 ```
 
+## kubeconfig
+
+```bash
+scp pi@pi0.local:/etc/kubernetes/admin.conf ~/.kube/pi0.yaml
+code ~/.kube/pi0.yaml
+```
+
 ## test
 
 sudo ctr -n k8s.io containers list
